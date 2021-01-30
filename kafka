@@ -1,0 +1,84 @@
+sudo su - postgres
+ psql
+\c az2z
+\dt
+select * from az2z;
+ systemctl stop postgresql
+
+
+./bin/kafka-server-start.sh ./config/server.properties
+
+./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+
+./bin/kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic az2z
+
+./bin/kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --topic az2z from-beginning               
+
+./bin/connect-standalone.sh ./config/connect-standalone.properties ./config/connect-jdbc.properties 
+
+
+{  "schema": { "type": "struct", "fields": [ { "type": "int64","optional": false,  "field": "id" },{"type": "string","optional": true, "field": "name"} ], "optional": true, "name": "user" }, "payload": { "id": 7, "name": "day23"}}
+
+
+ { "id": 1, "name": "for table fail test3"}
+ 
+ 
+ 
+ 
+ create topic
+ 
+ bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
+ 
+ 
+ 
+ descripe the topic
+ 
+ ./bin/kafka-topics.sh --describe --topic az2z --bootstrap-server localhost:9092
+ 
+ 
+ ./bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic  az2z --config retention.ms=9000000
+
+ ./bin/kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic az2z --create --partitions 1 --replication-factor 3
+
+ ./bin/kafka-topics.sh --zookeeper localhost:2181 --list
+ 
+ ./bin/kafka-topics.sh --zookeeper localhost:2181 --topic az2z --delete
+ 
+ list the topic 
+ bin/kafka-topics.sh --list --zookeeper localhost:2181
+ 
+ CREATE TABLE az2z3 (  user_id INT NOT NULL,username VARCHAR ( 50 ) UNIQUE NOT NULL);
+ 
+ 
+ 
+ name=sink-az2z
+connector.class=com.yaalalabs.p8.jdbcimp.connector.JdbcSinkConnector
+tasks.max=1
+topics=az2z
+jdbc.table=az2z
+driver.class=org.postgresql.Driver
+
+jdbc.url=jdbc:postgresql://localhost:5432/az2z
+jdbc.username=myuser
+jdbc.password=123
+auto.create=true
+
+############ distributed mode############
+ http://localhost:8083/connectors 
+ 
+ curl -X POST -H "Content-Type: application/json" -d '{"name": "sink-az2z", "config": { "connector.class": "com.yaalalabs.p8.jdbcimp.connector.JdbcSinkConnector","tasks.max":"1","topics":"az2z","jdbc.table":"az2z","driver.class":"org.postgresql.Driver","jdbc.url":"jdbc:postgresql://localhost:5432/az2z","jdbc.username":"myuser","jdbc.password":"123"}}'  http://localhost:8085/connectors
+
+ curl -X POST -H "Content-Type: application/json" --data '{"name": "local-file-sink", "config": {"connector.class":"FileStreamSinkConnector", "tasks.max":"3", "file":"test.sink.txt", "topics":"connect-test" }}' http://localhost:8083/connectors
+ 
+ curl -X GET -H "Content-Type: application/json" http://localhost:8083/connectors
+ 
+ curl -X DELETE -H "Content-Type: application/json" http://localhost:8083/connectors/sink-az2z
+ 
+ 
+ 
+ 
+ docker run  --network host  -p 8083:8083 yaalalabs/p8-distributed-kafka-connect2
+=> response from daemon: cannot stop container: 2d13ec467cc8: Cannot kill container
+ sudo aa-remove-unknown
+ 
+ sudo kill $(sudo lsof -t -i:8080)

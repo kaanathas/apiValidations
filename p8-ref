@@ -1,0 +1,31 @@
+docker run -d --name redisdb -p 6379:6379 redis
+
+docker run -d --name mongodb -p 27017:27017 mongo
+
+npm run-script build && npm start mongodb://localhost:27017/p8 3400 default
+
+node curl-script-generator.js > curl-script.sh
+
+docker exec -it mongodb_rep mongo rs.initiate()
+
+use p8
+db.dropDatabase()
+use p8
+db.createCollection("p8_users")
+db.createCollection("p8_issuers")
+db.createCollection("p8_instruments")
+db.createCollection("p8_instrument_parameters")
+db.createCollection("p8_markets")
+db.createCollection("p8_roles")
+db.createCollection("p8_firms")
+db.createCollection("p8_accounts")
+db.createCollection("p8_units")
+use p8
+
+docker run -d --name mongo_rep -p 27017:27017 mongo --replSet rs0 rs.initiate()
+
+rs.initiate()
+
+ "replica_set": "rs0"
+ "/home/yaala-labs/Desktop/le-searchtest/p8/p8-refdata/refdata_defs"
+ wget -c https://fastdl.mongodb.org/linux/mongodb-shell-linux-x86_64-ubuntu1604-4.4.3.tgz | tar -xz 
