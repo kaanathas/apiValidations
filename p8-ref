@@ -7,7 +7,7 @@ npm run-script build && npm start mongodb://localhost:27017/p8 3400 default
 node curl-script-generator.js > curl-script.sh
 
 docker exec -it mongodb_rep mongo rs.initiate()
- updated
+ updated test
 use p8
 db.dropDatabase()
 use p8
